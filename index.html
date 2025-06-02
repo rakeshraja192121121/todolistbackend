@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arrays and loops</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div class="center-container">
+        <div class="rak">
+            <p class="title">to-do-list</p>
+            <div class="icon-container">
+           <img src="toggle button.png" alt="togglebts" onclick="swap()"  class="toggle-image">
+           <span class="tool-tip">toggle</span>
+         </div>
+         <div class="icon-container">
+            <img src="alltask.svg" alt="business--v1" onclick="All()" class="All">
+            <span class="tool-tip">All Tasks</span>
+         </div>
+
+
+            <div class="icon-container">
+            <img src="office.svg" alt="business--v1" onclick="office()" class="office">
+            <span class="tool-tip">Office</span>
+            </div>
+            <div class="icon-container">
+            <img src="house.svg" alt="home--v1" onclick="homes()" class="home">
+            <span class="tool-tip">Home</span>
+            </div>
+            <div class="icon-container">
+            <img src="reset1.svg" alt="reset" onclick="reset()" class="reset">
+            <span class="tool-tip">Reset</span>
+            </div>
+            <div class="icon-container">
+                <img src="download.svg" alt="download" onclick="download()" class="download">
+                <span class="tool-tip">Download</span>
+                </div>
+            <form onsubmit="addtodo(event)">
+
+            <div class="grids">
+                <select class="catogery" required>
+                    <option value="">---Home/Office---</option>
+                    <option value="Home">Home</option>
+                    <option value="Office">Office</option>
+                </select>
+                <input placeholder="Task" class="name"  required>
+                <input type="date" class="dat"  required>
+                <input type="time" class="time"  required>
+                <select class="Priority"  required>
+                    <option value="">---Priority---</option>
+                    <option value="low">low</option>
+                    <option value="medium">medium</option>
+                    <option value="high">high</option>
+                </select>
+                <button type="submit" class="bts">add</button>
+                </form>
+            </div>
+            <div class="task-count">
+                <div class="countTask">Task count</div>
+                <div class="progress-container">
+                    <div class="progress-bar"> 0% </div>
+                </div>
+            </div>
+           <div class="text">
+
+            </div>
+        </div>
+    </div>
+
+        
+        
+
+    <div id="overlay" ></div>
+    <div id="popup" >
+        <p><strong>Task Name:</strong> <span id="popup-title"></span></p>
+        <p><strong>Date:</strong><span id="popdate"></span></p>
+        <p><strong>Time:</strong><span id="poptime"></span></p>
+        <button onclick="closepopup()" class="cls">Close</button>
+     
+    </div>
+   
+
+
+    <script src="index.js"></script>
+</body>
+
+</html>
