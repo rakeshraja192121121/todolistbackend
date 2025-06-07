@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>LoginPage</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="style2.css" />
+  </head>
+  <body>
+    <div class="container2">
+      <p class="cont">Login Page</p>
+      <form onsubmit="login(event)">
+        <input type="email" placeholder="Enter the mail ID" class="textbox" />
+        <br />
+        <input type="password" placeholder="password" class="passbox" />
+        <br />
+        <button type="submit" class="login-bts">Login</button>
+      </form>
+
+      <button onclick=" window.location.href='signin.html'" class="signin-bts">
+        Sign in
+      </button>
+    </div>
+
+    <script src="login.js"></script>
+  </body>
+</html>

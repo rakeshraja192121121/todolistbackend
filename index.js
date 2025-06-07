@@ -1,22 +1,26 @@
-let todolist = [];
+var todolist = [];
 let taskCount;
 let editindex = null;
+const userEmail = localStorage.getItem("username");
 
 function fetchtaskdata() {
-  const storedTask = sessionStorage.getItem("todolist");
+  var storedTask = null; //sessionStorage.getItem("todolist") ||;
   if (storedTask) {
-    console.log(storedTask);
+    console.log("the stored task in session storage", storedTask);
     todolist = JSON.parse(storedTask);
     taskCount = todolist.length;
     render("All");
     updatetaskcount();
   } else {
     console.log("the sessionstorage is empty");
-    fetch("http://localhost:3000/tasks")
+    fetch(`http://localhost:3000/tasks?userName=${userEmail}`)
       .then((response) => response.json())
       .then((data) => {
         todolist = data;
         sessionStorage.setItem("todolist", JSON.stringify(todolist));
+
+        storedTask = sessionStorage.getItem("todolist");
+
         taskCount = todolist.length;
         render("All");
         updatetaskcount();
@@ -27,6 +31,7 @@ window.onload = () => {
   fetchtaskdata();
 };
 function addtodo(event) {
+  event.preventDefault();
   let values = document.querySelector(".name");
   let Date = document.querySelector(".dat");
   let catogery = document.querySelector(".catogery").value;
@@ -53,7 +58,7 @@ function addtodo(event) {
 
     fetch(`http://localhost:3000/update/tasks/${id}`, {
       method: "PUT",
-      headers: { "content-type": "application/json" },
+      headers: { "Content-type": "application/json" },
       body: JSON.stringify({
         name: values.value,
         dat: Date.value,
@@ -64,14 +69,11 @@ function addtodo(event) {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log("Updated data from server:", data);
         todolist[editindex] = data;
-        sessionStorage.setItem("todolist", JSON.stringify(todolist));
-        alert("updated");
-        console.log(data);
+        sessionStorage.removeItem("todolist");
         fetchtaskdata();
-      })
-      .catch((error) => {
-        console.error(error);
+        updatetaskcount();
       });
     editindex = null;
   } else {
@@ -84,17 +86,17 @@ function addtodo(event) {
         catogery: catogery,
         timer: timer.value,
         priority: priority,
+        user: userEmail,
       }),
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log("Added task:", data);
         todolist.push(data);
+        taskCount = todolist.length;
         sessionStorage.setItem("todolist", JSON.stringify(todolist));
         render("All");
         updatetaskcount();
-
-        alert("added");
-        console.log(data);
       })
       .catch((error) => {
         console.error(error);
@@ -150,7 +152,7 @@ function render(catogery = "All") {
         class="edit-iconbutton"
         alt="Edit"
         onclick="edit(${element.index})">
-        <img src="https://img.icons8.com/color-glass/48/filled-trash.png" alt="delete" class="delete-button" onclick="deletes(${element.index}, '${element.catogery}')">`;
+        <img src="https://img.icons8.com/color-glass/48/filled-trash.png" alt="delete" class="delete-button" onclick="deletes('${element._id}', '${element.catogery}')">`;
 
     let htmll = `<div class='task ${priorityClass} ' draggable = "true" ondragstart='dragstart(event)' ondragover='dragover(event)' ondrop='drop(event)' ondragend=dragend(event) id='task${
       element.index
@@ -195,17 +197,24 @@ function render(catogery = "All") {
   text.innerHTML = acc;
 }
 
-function deletes(i, catogery) {
-  const id = todolist[i]._id;
+function deletes(id, catogery) {
+  console.log("the delete id is ", id);
   fetch(`http://localhost:3000/delete/${id}`, {
     method: "DELETE",
   })
     .then((res) => res.json())
     .then((data) => {
-      fetchtaskdata();
+      todolist = todolist.filter((task) => task._id != id);
+      sessionStorage.setItem("todolist", JSON.stringify(todolist));
+      render((catogery = "All"));
+      taskCount--;
+      updatetaskcount();
+
+      // fetchtaskdata();
     })
     .catch((err) => console.error(err));
-  fetchtaskdata();
+  //  fetchtaskdata();
+  // sessionStorage.setItem("todolist", JSON.stringify(todolist));
 }
 
 function edit(index) {
@@ -248,10 +257,30 @@ function reset() {
 }
 
 function markasDone(index) {
-  todolist[index].completed = !todolist[index].completed;
-  // localStorage.setItem("todolist", JSON.stringify(todolist));
-  render(todolist[index].catogery);
+  const task = todolist[index];
+  const updated = !task.completed;
+  const id = task._id;
+  task.completed = updated;
+
+  render("All");
   updatetaskcount();
+
+  fetch(`http://localhost:3000/update/tasks/${id}`, {
+    method: "PUT",
+    headers: { "Content-type": "application/json" },
+    body: JSON.stringify({ ...task, completed: updated }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("modifiedData", data);
+      todolist[index] = data;
+      sessionStorage.setItem("todolist", JSON.stringify(todolist));
+      render("All");
+      updatetaskcount();
+    });
+  // localStorage.setItem("todolist", JSON.stringify(todolist));
+  //   render(todolist[index].catogery);
+  //   updatetaskcount();
 }
 
 let draggedTask = null;

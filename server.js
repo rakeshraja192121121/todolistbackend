@@ -1,29 +1,72 @@
 require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
+const bcrypt = require("bcrypt");
 
-//middlewares
-const displayserver = require("./displaymovies");
-const show = require("./showmovies");
-const send = require("./postmovies");
+//controlers
+const displayserver = require("./displaymovies.js");
+const show = require("./showmovies.js");
+const send = require("./postmovies.js");
 const update = require("./update.js");
-const deleteTask = require("./deleteTask");
-const reset = require("./reset");
+const deleteTask = require("./deleteTask.js");
+const reset = require("./reset.js");
+// const users = require("./user");
+// const add = require("./addusers.js");
 
-const TaskModel = require("./taskdata");
+const TaskModel = require("./taskdata.js");
+const userModel = require("./userdb.js");
 
 const mongoose = require("mongoose");
 
 mongoose
   .connect(process.env.DATABASE_URL)
-  .then(() => console.log("connection established"));
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
 
 const cors = require("cors");
 
 const app = express();
-
+app.use(express.json());
 app.use(bodyParser.json());
 app.use(cors());
+
+app.get("/users", async (req, res) => {
+  const allUsers = await userModel.find();
+  res.json(allUsers);
+});
+app.post("/users", async (req, res) => {
+  try {
+    const newUser = req.body;
+    const existing = await userModel.findOne({ userName: newUser.userName });
+    if (existing) {
+      res.status(400).send("alredy existing"); // bad request error
+    } else {
+      const salt = await bcrypt.genSalt();
+      const hashedpass = await bcrypt.hash(req.body.password, salt);
+      const plus = { userName: req.body.userName, password: hashedpass };
+      const addUser = await userModel.create(plus);
+      return res.status(201).json({ msg: "User created" });
+    }
+  } catch {
+    res.status(500).send(); //internal server error
+  }
+});
+
+app.post("/users/login", async (req, res) => {
+  const users = await userModel.findOne({ userName: req.body.userName });
+  if (users == null) {
+    res.status(400).send("no username is found");
+  }
+  try {
+    if (await bcrypt.compare(req.body.password, users.password)) {
+      res.send("success");
+    } else {
+      res.send("invalid password");
+    }
+  } catch {
+    res.status(500).send();
+  }
+});
 
 app.get("/", displayserver);
 

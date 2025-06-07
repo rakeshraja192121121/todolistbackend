@@ -1,0 +1,48 @@
+body{
+    align-items: center;
+    display:flex;
+    text-align: center;
+    justify-content: center;
+    height:100vh;
+    background-color: rgb(228, 226, 223);
+}
+.container3{
+    background-color: white;
+    padding:12px;
+    border-radius: 12px;
+    text-align: center;
+    width:320px;
+}
+.cont{
+    font-size:24px;
+    font-weight:bold;
+    margin-bottom:20px;
+    color:blue;
+}
+
+.email-signin,
+.pass-signin{
+    padding:10px;
+    width:90%;
+    margin:10px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+
+
+}
+.signin-bts{
+    width:90%;
+    padding:10px;
+    margin-top:10px;
+    font-size:16px;
+    background-color: rgba(0, 0, 255, 0.822);
+    border:none;
+    border-radius: 8px;
+    color:white;
+    cursor:pointer;
+}
+
+
+.signin-bts:hover{
+    background-color:#2563eb ;
+}

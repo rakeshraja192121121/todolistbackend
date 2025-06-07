@@ -1,0 +1,53 @@
+body{
+    margin:0;
+    padding:0;
+    background-color: #f5f7fa;
+    display: flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+
+
+
+}
+
+.container2{
+    background-color:white;
+    padding:12px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    text-align: center;
+    width:320px;
+}
+.cont{
+    font-size:24px;
+    font-weight:bold;
+    margin-bottom:20px;
+    color:blue;
+}
+.textbox,
+.passbox{
+    width:90%;
+    padding:10px;
+    margin:10px ;
+    border: 1px solid #ccc;
+    font-size:14px;
+}
+
+.login-bts,
+.signin-bts{
+    width:90%;
+    padding:10px;
+    margin-top:10px;
+    font-size:16px;
+    background-color: rgba(0, 0, 255, 0.822);
+    border:none;
+    border-radius: 8px;
+    color:white;
+    cursor:pointer;
+}
+
+.login-bts:hover,
+.signin-bts:hover{
+    background-color:#2563eb ;
+}
