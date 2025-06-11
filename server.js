@@ -10,6 +10,9 @@ const send = require("./postmovies.js");
 const update = require("./update.js");
 const deleteTask = require("./deleteTask.js");
 const reset = require("./reset.js");
+const allUsers = require("./showallusers");
+// const postUsers = require("./postUsers");
+const postLogins = require("./postLogin");
 // const users = require("./user");
 // const add = require("./addusers.js");
 
@@ -30,14 +33,11 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(cors());
 
-app.get("/users", async (req, res) => {
-  const allUsers = await userModel.find();
-  res.json(allUsers);
-});
+app.get("/users", allUsers);
 app.post("/users", async (req, res) => {
   try {
     const newUser = req.body;
-    const existing = await userModel.findOne({ userName: newUser.userName });
+    const existing = await userModel.findOne({ userName: req.body.userName });
     if (existing) {
       res.status(400).send("alredy existing"); // bad request error
     } else {

@@ -1,0 +1,21 @@
+const asyncHandler = require("express-async-handler");
+const JWT = require("jsonwebtoken");
+
+const validateToken = asyncHandler(async (req, res, next) => {
+  let token;
+  let authHeader = req.headers.Authorization || req.headers.authorization;
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    token = authHeader.split(" ")[1];
+    JWT.verify(token, process.env.ACCESSTOKEN, (err, decoded) => {
+      if (err) {
+        res.status(401);
+        throw new Error("Verification failed");
+      }
+
+      req.user = decoded.user;
+      next();
+    });
+  }
+});
+
+module.exports = validateToken;
